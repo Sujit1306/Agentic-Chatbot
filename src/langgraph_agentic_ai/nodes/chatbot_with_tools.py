@@ -7,18 +7,6 @@ class ChatbotWithToolsNode:
     def __init__(self, model):
         self.llm = model
 
-    # def process(self, state:State)->dict:
-    #     """
-    #     Process the input and generate a response with tool integration.
-    #     """
-    #     user_input = state["messages"][-1] if state["messages"] else ""
-    #     llm_response = self.llm.invoke([{"role":"user", "content": user_input}])
-
-    #     # simulate the tool specific logic
-    #     tool_response = f"Tool integration for: '{user_input}'"
-
-    #     return {"messages": [llm_response, tool_response]}
-
     def create_chatbot(self, tools):
         """
         Returns a chatbot node function

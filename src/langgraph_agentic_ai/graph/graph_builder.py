@@ -4,6 +4,7 @@ from src.langgraph_agentic_ai.nodes.basic_chatbot_node import BasicChatbotNode
 from src.langgraph_agentic_ai.tools.search_tool import get_tools, create_tool_node
 from langgraph.prebuilt import tools_condition, ToolNode
 from src.langgraph_agentic_ai.nodes.chatbot_with_tools import ChatbotWithToolsNode
+from src.langgraph_agentic_ai.nodes.ai_news_node import AINewsNode
 
 class GraphBuilder:
     def __init__(self, model):
@@ -54,6 +55,22 @@ class GraphBuilder:
         self.graph_builder.add_edge("tools", "chatbot with tools")
 
 
+    def ai_news_build_graph(self):
+        
+        AI_News_node = AINewsNode(self.llm)
+
+        
+        # add nodes
+        self.graph_builder.add_node("fetch news", AI_News_node.fetch_news)
+        self.graph_builder.add_node("summarize news", AI_News_node.summarize_news)
+        self.graph_builder.add_node("save result", AI_News_node.save_result)
+        
+        # add edges
+        self.graph_builder.set_entry_point("fetch news")
+        self.graph_builder.add_edge("fetch news", "summarize news")
+        self.graph_builder.add_edge("summarize news", "save result")
+        self.graph_builder.add_edge("save result", END)
+
     def setup_graph(self, usecase: str):
         """
         Sets up the graph for selected usecase.
@@ -63,5 +80,8 @@ class GraphBuilder:
 
         if usecase == "Chatbot with Web":
             self.chatbot_with_tools_build_graph()
+
+        if usecase == "AI News":
+            self.ai_news_build_graph()
 
         return self.graph_builder.compile()
